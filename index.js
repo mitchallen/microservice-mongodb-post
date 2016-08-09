@@ -11,6 +11,8 @@ module.exports = function (spec, modCallback) {
 
     let demand = require('@mitchallen/demand');
 
+    demand.notNull(spec,'ERROR: service parameters not defined.');
+
     let name = spec.name;
     let version = spec.version;
     let verbose = spec.verbose || false;
