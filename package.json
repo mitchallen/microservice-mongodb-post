@@ -4,9 +4,15 @@
   "description": "microservice for posting to MongoDB",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --recursive --timeout 20000",
+    "//": "To use: npm run test-nodemon (assumes global location of mocha)",
+    "test-nodemon": "nodemon /usr/local/bin/mocha --timeout 5000"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/mitchallen/microservice-mongodb-post.git"
+  },
+  "author": "Mitch Allen <npm@mitchallen.com> (http://mitchallen.com)",
   "license": "ISC",
   "dependencies": {
     "@mitchallen/demand": "^0.1.2",
