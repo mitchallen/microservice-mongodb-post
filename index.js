@@ -16,20 +16,20 @@ module.exports = function (spec, modCallback) {
     let name = spec.name;
     let version = spec.version;
     let verbose = spec.verbose || false;
-    let prefix = spec.prefix || "";
+    let prefix = spec.prefix;
     let collectionName = spec.collectionName;
     let port = spec.port;
     let mongodb = spec.mongodb;
 
     demand.notNull(name,'ERROR: service name not defined.');
     demand.notNull(version,'ERROR: service version not defined.');
+    demand.notNull(prefix,'ERROR: service prefix not defined.');
     demand.notNull(collectionName,'ERROR: service collection name not defined.');
     demand.notNull(port,'ERROR: service port not defined.');
     demand.notNull(mongodb,'ERROR: service mongodb configuration not defined.');
     demand.notNull(mongodb.uri,'ERROR: service mongodb.uri not defined.');
 
     let path = "/" + collectionName;
-    let sLocation = prefix + path;
 
     var service = {
 
@@ -44,6 +44,7 @@ module.exports = function (spec, modCallback) {
             var router = info.router,
                    db  = info.connection.mongodb.db;
             demand.notNull(db);
+            // path does not include prefix (set elsewhere)
             router.post( path, function (req, res) {
                 var collection = db.collection(collectionName);
                 // Insert some documents 
@@ -58,7 +59,7 @@ module.exports = function (spec, modCallback) {
                                 .send(err);
                         } else {
                             let docId = result.insertedIds[0];
-                            let location = prefix + path + "/" + docId;
+                            let location = path + "/" + docId;
                             res
                                 .location(location)
                                 .status(201)
