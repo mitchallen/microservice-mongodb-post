@@ -16,8 +16,7 @@ var service = {
     collectionName: "music",
 };
 
-require('../../index')(service, function(err,obj) {
-// require('@mitchallen/microservice-mongodb-post')(service, function(err,obj) {
+require('@mitchallen/microservice-mongodb-post')(service, function(err,obj) {
     if( err ) {
         console.log(err);
         throw new Error( err.message );
