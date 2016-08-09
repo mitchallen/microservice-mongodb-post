@@ -2,9 +2,6 @@
 
 let demand = require('@mitchallen/demand');
 let prefix = process.env.MUSIC_POST_API_VERSION || '/v1';
-let tableName = "music";
-let path = "/" + tableName;
-let sLocation = prefix + path;
 
 var service = {
 

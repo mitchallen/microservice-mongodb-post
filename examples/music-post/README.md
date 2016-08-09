@@ -26,6 +26,6 @@ At the command line, type:
 
     curl -i -X POST -H "Content-Type: application/json" -d @data.json http://localhost:8004/v1/music
 
-You have to be in the same folder so that the curl command finds data.json.
+You have to be in the same folder so that the curl command finds __data.json__.
 
 ### To stop the test app, in the original console window press __Ctrl-C__.
