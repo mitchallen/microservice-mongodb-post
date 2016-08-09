@@ -1,5 +1,5 @@
 {
-  "name": "microservice-mongodb-post",
+  "name": "@mitchallen/microservice-mongodb-post",
   "version": "0.1.0",
   "description": "microservice for posting to MongoDB",
   "main": "index.js",

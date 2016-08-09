@@ -16,7 +16,6 @@ var service = {
     collectionName: "music",
 };
 
-// TODO - replace with package when published
 require('../../index')(service, function(err,obj) {
 // require('@mitchallen/microservice-mongodb-post')(service, function(err,obj) {
     if( err ) {
