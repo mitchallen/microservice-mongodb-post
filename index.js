@@ -59,10 +59,9 @@ module.exports = function (spec, modCallback) {
                                 .send(err);
                         } else {
                             // console.log(JSON.stringify(result.ops[0]));
-                            console.log(JSON.stringify(result));
                             let docId = result.insertedIds[0];
                             let location = prefix + path + "/" + docId;
-                            console.log("LOCATION:" + location );
+                            // console.log("LOCATION:" + location );
                             res
                                 .location(location)
                                 .status(201)
