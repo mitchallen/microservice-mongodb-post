@@ -1,85 +1,49 @@
-/**
-    Module: @mitchallen/microservice-mongodb-post
-    Author: Mitch Allen
-*/
+module.exports = function (grunt) {
 
-/*jshint esversion: 6 */
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-bump');
+    grunt.loadNpmTasks('grunt-shell');
 
-"use strict";
+    grunt.initConfig({
 
-module.exports = function (spec, modCallback) {
+        // used by the changelog task
+        pkg: grunt.file.readJSON('package.json'),
 
-    let demand = require('@mitchallen/demand');
+        jshint: {
+            options: {
+                node: true
+            },
+            all: ['*.js']
+        },
 
-    demand.notNull(spec,'ERROR: service parameters not defined.');
+        shell: {
+            publish: {
+                command: 'npm publish'
+            },
 
-    let name = spec.name;
-    let version = spec.version;
-    let verbose = spec.verbose || false;
-    let prefix = spec.prefix;
-    let collectionName = spec.collectionName;
-    let port = spec.port;
-    let mongodb = spec.mongodb;
+            pubinit: {
+                command: 'npm publish --access public'
+            }
+        },
 
-    demand.notNull(name,'ERROR: service name not defined.');
-    demand.notNull(version,'ERROR: service version not defined.');
-    demand.notNull(prefix,'ERROR: service prefix not defined.');
-    demand.notNull(collectionName,'ERROR: service collection name not defined.');
-    demand.notNull(port,'ERROR: service port not defined.');
-    demand.notNull(mongodb,'ERROR: service mongodb configuration not defined.');
-    demand.notNull(mongodb.uri,'ERROR: service mongodb.uri not defined.');
+        // To test: grunt bump --dry-run
 
-    let path = "/" + collectionName;
+        bump: {
+            options: {
 
-    var service = {
+                commit: true,
+                createTag: true,
+                push: true,
+                pushTo: 'origin',
 
-        name: name,
-        version: version,
-        verbose: verbose,
-        apiVersion: prefix,
-        port: port,
-        mongodb: mongodb,
+                updateConfigs: ['pkg'],
+                commitFiles: ['package.json']
+            }
+        },
 
-        method: function(info) {
-            var router = info.router,
-                   db  = info.connection.mongodb.db;
-            demand.notNull(db);
-            // path does not include prefix (set elsewhere)
-            router.post( path, function (req, res) {
-                var collection = db.collection(collectionName);
-                // Insert some documents 
-                // In the mongo shell, verify with: db.<collectionName>.find()
-                collection.insert(
-                    req.body, 
-                    function(err, result) {
-                        if( err ) {
-                            console.error(err);
-                            res
-                                .status(500)
-                                .send(err);
-                        } else {
-                            // console.log(JSON.stringify(result.ops[0]));
-                            let docId = result.insertedIds[0];
-                            let location = prefix + path + "/" + docId;
-                            // console.log("LOCATION:" + location );
-                            res
-                                .location(location)
-                                .status(201)
-                                .json(result);
-                        }
-                    });
-                }
-            );
-            return router;
-        }
-    };
+    });
 
-    var callback = modCallback || function(err,obj) {
-        if( err ) {
-            console.log(err);
-            throw new Error( err.message );
-        }
-    };
-
-    require('@mitchallen/microservice-mongodb')(service, callback);
+    grunt.registerTask('default', ['jshint']);
+    grunt.registerTask('pubinit', ['jshint','shell:pubinit']);
+    grunt.registerTask('publish', ['jshint','bump','shell:publish']);
 };
