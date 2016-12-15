@@ -4,10 +4,14 @@
     Author: Mitch Allen
 */
 
+/*jshint node: true */
+/*jshint esversion: 6 */
+
 "use strict";
 
 var request = require('supertest'),
     should = require('should'),
+    modulePath = "../index",
     testName = require("../package").name,
     testVersion = require("../package").version,
     verbose = process.env.TEST_VERBOSE || false,
@@ -25,6 +29,30 @@ var request = require('supertest'),
 
 describe('mongodb microservice smoke test', function() {
 
+    var _module = null;
+
+    before(function(done) {
+        // Call before all tests
+        delete require.cache[require.resolve(modulePath)];
+        _module = require(modulePath);
+        done();
+    });
+
+    after(function(done) {
+        // Call after all tests
+        done();
+    });
+
+    beforeEach(function(done) {
+        // Call before each test
+        done();
+    });
+
+    afterEach(function(done) {
+        // Call after eeach test
+        done();
+    });
+
       it('should not throw an error', function(done) {
         var options = {
             name: testName,
@@ -35,10 +63,7 @@ describe('mongodb microservice smoke test', function() {
             mongodb: testMongo,
             collectionName: testCollectionName,
         };
-        var modulePath = '../index';
-        // Needed for cleanup between tests
-        delete require.cache[require.resolve(modulePath)];
-        require(modulePath)(options, function(err,obj) {
+        _module.Service(options, function(err,obj) {
             should.not.exist(err);
             should.exist(obj);
             var server = obj.server;
@@ -59,10 +84,7 @@ describe('mongodb microservice smoke test', function() {
             collectionName: testCollectionName
         };
         
-        var modulePath = '../index';
-        // Needed for cleanup between tests
-        delete require.cache[require.resolve(modulePath)];
-        require(modulePath)(options, function(err,obj) {
+        _module.Service(options, function(err,obj) {
             should.not.exist(err);
             should.exist(obj);
             var server = obj.server;

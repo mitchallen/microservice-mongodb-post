@@ -8,7 +8,9 @@
 
 "use strict";
 
-module.exports = function (spec, modCallback) {
+var dbCore = require('@mitchallen/microservice-mongodb');
+
+module.exports.Service = function (spec, modCallback) {
 
     let demand = require('@mitchallen/demand');
 
@@ -82,5 +84,5 @@ module.exports = function (spec, modCallback) {
         }
     };
 
-    require('@mitchallen/microservice-mongodb')(service, callback);
+    dbCore.Service(service, callback);
 };

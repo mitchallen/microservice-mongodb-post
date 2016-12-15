@@ -45,8 +45,9 @@ Here is the code from the example folder: __examples/music-post/index.js__
 
     "use strict";
     
-    let demand = require('@mitchallen/demand');
-    let prefix = process.env.MUSIC_POST_API_VERSION || '/v1';
+    let demand = require('@mitchallen/demand'),
+    	dbCore = require('@mitchallen/microservice-mongodb-post',
+        prefix = process.env.MUSIC_POST_API_VERSION || '/v1';
     
     var service = {
     
@@ -61,7 +62,7 @@ Here is the code from the example folder: __examples/music-post/index.js__
         collectionName: "music",
     };
     
-    require('@mitchallen/microservice-mongodb-post')(service, function(err,obj) {
+    dbCore.Service(service, function(err,obj) {
         if( err ) {
             console.log(err);
             throw new Error( err.message );
@@ -113,9 +114,9 @@ The __12345__ portion of the string would change to match the uri that mlabs giv
 
 ## Callback
 
-You pass the __service__ object to the module along with a callback:
+You pass the __service__ object to the __Service__ method along with a callback:
 
-    require('@mitchallen/microservice-mongodb-post')(service, function(err,obj) {});
+    dbCore.Service(service, function(err,obj) {});
 
 The object returned by the callback contains a __server__ field:
 
@@ -127,7 +128,7 @@ It was handy for me to use the __close__ method in the unit tests so I wouldn't 
 
 Here is an example of how to create it, then use the server return value to close it (checking for null omitted for brevity):
 
-    require('@mitchallen/microservice-mongodb-post')(options, function(err,obj) {
+    dbCore.Service(options, function(err,obj) {
         if(err) {
         	// ...
         }
@@ -168,6 +169,11 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 * * *
 
 ## Version History
+
+#### Version 0.2.1
+
+* Now uses updated code
+* Bumped version because breaks backward compatability
 
 #### Version 0.1.2
 

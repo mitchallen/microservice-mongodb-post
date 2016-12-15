@@ -1,6 +1,6 @@
 {
   "name": "@mitchallen/microservice-mongodb-post",
-  "version": "0.1.2",
+  "version": "0.2.1",
   "description": "microservice for posting to MongoDB",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "@mitchallen/demand": "^0.1.2",
-    "@mitchallen/microservice-mongodb": "^0.1.0"
+    "@mitchallen/microservice-mongodb": "^0.2.2"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
