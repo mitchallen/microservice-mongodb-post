@@ -1,49 +1,86 @@
-module.exports = function (grunt) {
+/**
+    Module: @mitchallen/microservice-mongodb-post
+    Author: Mitch Allen
+*/
 
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-bump');
-    grunt.loadNpmTasks('grunt-shell');
+/*jshint node: true */
+/*jshint esversion: 6 */
 
-    grunt.initConfig({
+"use strict";
 
-        // used by the changelog task
-        pkg: grunt.file.readJSON('package.json'),
+module.exports = function (spec, modCallback) {
 
-        jshint: {
-            options: {
-                node: true
-            },
-            all: ['*.js']
-        },
+    let demand = require('@mitchallen/demand');
 
-        shell: {
-            publish: {
-                command: 'npm publish'
-            },
+    demand.notNull(spec,'ERROR: service parameters not defined.');
 
-            pubinit: {
-                command: 'npm publish --access public'
-            }
-        },
+    let name = spec.name;
+    let version = spec.version;
+    let verbose = spec.verbose || false;
+    let prefix = spec.prefix;
+    let collectionName = spec.collectionName;
+    let port = spec.port;
+    let mongodb = spec.mongodb;
 
-        // To test: grunt bump --dry-run
+    demand.notNull(name,'ERROR: service name not defined.');
+    demand.notNull(version,'ERROR: service version not defined.');
+    demand.notNull(prefix,'ERROR: service prefix not defined.');
+    demand.notNull(collectionName,'ERROR: service collection name not defined.');
+    demand.notNull(port,'ERROR: service port not defined.');
+    demand.notNull(mongodb,'ERROR: service mongodb configuration not defined.');
+    demand.notNull(mongodb.uri,'ERROR: service mongodb.uri not defined.');
 
-        bump: {
-            options: {
+    let path = "/" + collectionName;
 
-                commit: true,
-                createTag: true,
-                push: true,
-                pushTo: 'origin',
+    var service = {
 
-                updateConfigs: ['pkg'],
-                commitFiles: ['package.json']
-            }
-        },
+        name: name,
+        version: version,
+        verbose: verbose,
+        apiVersion: prefix,
+        port: port,
+        mongodb: mongodb,
 
-    });
+        method: function(info) {
+            var router = info.router,
+                   db  = info.connection.mongodb.db;
+            demand.notNull(db);
+            // path does not include prefix (set elsewhere)
+            router.post( path, function (req, res) {
+                var collection = db.collection(collectionName);
+                // Insert some documents 
+                // In the mongo shell, verify with: db.<collectionName>.find()
+                collection.insert(
+                    req.body, 
+                    function(err, result) {
+                        if( err ) {
+                            console.error(err);
+                            res
+                                .status(500)
+                                .send(err);
+                        } else {
+                            // console.log(JSON.stringify(result.ops[0]));
+                            let docId = result.insertedIds[0];
+                            let location = prefix + path + "/" + docId;
+                            // console.log("LOCATION:" + location );
+                            res
+                                .location(location)
+                                .status(201)
+                                .json(result);
+                        }
+                    });
+                }
+            );
+            return router;
+        }
+    };
 
-    grunt.registerTask('default', ['jshint']);
-    grunt.registerTask('pubinit', ['jshint','shell:pubinit']);
-    grunt.registerTask('publish', ['jshint','bump','shell:publish']);
+    var callback = modCallback || function(err,obj) {
+        if( err ) {
+            console.log(err);
+            throw new Error( err.message );
+        }
+    };
+
+    require('@mitchallen/microservice-mongodb')(service, callback);
 };
