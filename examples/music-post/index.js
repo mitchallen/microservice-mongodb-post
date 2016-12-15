@@ -1,7 +1,8 @@
 "use strict";
 
-let demand = require('@mitchallen/demand');
-let prefix = process.env.MUSIC_POST_API_VERSION || '/v1';
+let demand = require('@mitchallen/demand'),
+    dbCore = require('@mitchallen/microservice-mongodb-post'),
+    prefix = process.env.MUSIC_POST_API_VERSION || '/v1';
 
 var service = {
 
@@ -16,7 +17,7 @@ var service = {
     collectionName: "music",
 };
 
-require('@mitchallen/microservice-mongodb-post')(service, function(err,obj) {
+dbCore.Service(service, function(err,obj) {
     if( err ) {
         console.log(err);
         throw new Error( err.message );

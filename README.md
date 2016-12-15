@@ -170,9 +170,16 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Version History
 
-#### Version 0.2.1
+#### Version 0.2.3
+
+* Updated examples
+
+#### Version 0.2.2
 
 * Now uses updated code
+
+#### Version 0.2.1
+
 * Bumped version because breaks backward compatability
 
 #### Version 0.1.2

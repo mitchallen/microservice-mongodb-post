@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@mitchallen/microservice-mongodb-post": "^0.1.0"
+    "@mitchallen/microservice-mongodb-post": "^0.2.2"
   }
 }
